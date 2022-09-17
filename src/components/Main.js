@@ -15,7 +15,8 @@ function Main(props) {
             <img 
             src={currentUser.avatar}
             className="profile__avatar" 
-            onClick={props.onEditAvatarClick} />
+            onClick={props.onEditAvatarClick}
+            alt='User photo' />
             <img 
             src={editAvatar} 
             alt="A pencil icon" 

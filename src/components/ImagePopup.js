@@ -8,7 +8,7 @@ function ImagePopup(props) {
         type="button" 
         className="action-button popup__close-button popup-picture-box__button"
         aria-label="Close button"
-        onClick={props.onClose}></button>
+        onClick={props.onClose} />
         <img 
         src={props.card.link} 
         alt="" 

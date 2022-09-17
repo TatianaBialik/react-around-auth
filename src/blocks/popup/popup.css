@@ -26,6 +26,8 @@
   min-height: 330px;
   position: relative;
   cursor: default;
+  background-color: #fff;
+  border-radius: 10px;
 }
 
 .popup__close-button {

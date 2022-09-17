@@ -8,6 +8,9 @@
 @import url(./blocks/gallery/gallery.css);
 @import url(./blocks/card/card.css);
 @import url(./blocks/footer/footer.css);
+@import url(./blocks/auth-page/auth-page.css);
+@import url(./blocks/info/info.css);
+@import url(./blocks/link/link.css);
 
 @import url(./blocks/popup/popup.css);
 @import url(./blocks/form/form.css);
