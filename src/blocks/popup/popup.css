@@ -55,3 +55,11 @@
     right: 0;
   }
 }
+
+@media screen and (max-width: 480px) {
+  .popup__close-button {
+    top: -60px;
+    left: 50%;
+  }
+  
+}
