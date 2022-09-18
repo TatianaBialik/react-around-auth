@@ -84,6 +84,7 @@
   height: 24px;
   align-self: center;
   padding: 0;
+  outline: none;
 }
 
 .profile__add-button {
@@ -95,6 +96,7 @@
   border: 2px solid #FFFFFF;
   box-sizing: border-box;
   border-radius: 2px;
+  outline: none;
 }
 
 .profile__add-picture {

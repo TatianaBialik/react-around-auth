@@ -45,6 +45,7 @@
   background-color: #fff;
   font-size: 18px;
   padding: 14px 84px;
+  outline: none;
 }
 
 .auth-page__subtext {

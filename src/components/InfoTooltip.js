@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import successimage from '../images/success.svg';
 import errorimage from '../images/error.svg';
 
 function InfoTooltip({ isOpen, onClose, status }) {
+  useEffect(() => {
+    const onEscPress = (e) => e.key === 'Escape' && onClose();
+    document.addEventListener('keydown', onEscPress);
+
+    return () => {
+      document.removeEventListener('keydown', onEscPress);
+    };
+  }, []);
+
   return (
     <div className={`popup popup_type_infotooltip ${isOpen ? 'popup_opened' : ''}`}>
       <div className='popup__box info'>

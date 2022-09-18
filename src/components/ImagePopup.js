@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 function ImagePopup(props) {
+  useEffect(() => {
+    const onEscPress = (e) => e.key === 'Escape' && props.onClose();
+    document.addEventListener('keydown', onEscPress);
+
+    return () => {
+      document.removeEventListener('keydown', onEscPress);
+    };
+  }, []);
+
   return (
     <div className={`popup popup_type_picture ${props.isOpen ? 'popup_opened' : ''}`}>
       <div className="popup-picture-box">

@@ -40,6 +40,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState('');
   const [email, setEmail] = useState('');
 
+  /* Saving information state for popups' button text render */
+  const [isSaving, setIsSaving] = useState(false);
+
   /* Logged in state */
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -116,13 +119,15 @@ function App() {
   }
 
   const handleAddPlaceSubmit = ({name,link}) => {
+    setIsSaving(true);
     api
       .addCard({name,link})
       .then(newCard => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+      .finally(() => setIsSaving(false));
   }
 
   /* Sign up and sign in handlers */
@@ -205,6 +210,7 @@ function App() {
 
   /* Update user profile handlers: user about and avatar */
   const handleUpdateUser = ({name, about}) => {
+    setIsSaving(true);
     api
       .editProfileInfo({name, about})
       .then(newUser => {
@@ -212,9 +218,11 @@ function App() {
         closeAllPopups();
       })
       .catch(err => console.log(err))
+      .finally(() => setIsSaving(false));
   }
 
   const handleUpdateAvatar = (({avatar}) => {
+    setIsSaving(true);
     api
       .editProfilePhoto(avatar)
       .then(newUser => {
@@ -222,6 +230,7 @@ function App() {
         closeAllPopups();
       })
       .catch(err => console.log(err))
+      .finally(() => setIsSaving(false));
   })
 
   return (
@@ -264,15 +273,18 @@ function App() {
         <EditProfilePopup 
         isOpen={isEditProfileOpen} 
         onClose={closeAllPopups}
-        onUpdateUser={handleUpdateUser} />
+        onUpdateUser={handleUpdateUser}
+        isSaving={isSaving} />
         <EditAvatarPopup 
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
-        onUpdateAvatar={handleUpdateAvatar} />
+        onUpdateAvatar={handleUpdateAvatar}
+        isSaving={isSaving} />
         <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
-        onAddPlaceSubmit={handleAddPlaceSubmit} />
+        onAddPlaceSubmit={handleAddPlaceSubmit}
+        isSaving={isSaving} />
         <DeleteCardPopup
         isOpen={isDeleteCardPopupOpen}
         onClose={closeAllPopups}

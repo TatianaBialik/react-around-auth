@@ -23,7 +23,6 @@
 .popup__box {
   max-width: 430px;
   width: 100%;
-  min-height: 330px;
   position: relative;
   cursor: default;
   background-color: #fff;
@@ -61,5 +60,4 @@
     top: -60px;
     left: 50%;
   }
-  
 }
