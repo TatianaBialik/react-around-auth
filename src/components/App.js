@@ -21,7 +21,6 @@ import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
-
   /* Popups opened/closed state constants */
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -37,7 +36,7 @@ function App() {
   const [cards, setCards] = useState([]);
 
   /* Current user information state */
-  const [currentUser, setCurrentUser] = useState('');
+  const [currentUser, setCurrentUser] = useState({});
   const [email, setEmail] = useState('');
 
   /* Saving information state for popups' button text render */
@@ -51,19 +50,10 @@ function App() {
 
   /* Get initial page information: user info and cards gallery */
   useEffect(() => {
-    api
-      .getUserInfo()
-      .then(userInfo => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userInfo, cards]) => {
         setCurrentUser(userInfo);
-      })
-      .catch(err => console.log(err));
-  }, []);
-
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then(res => {
-        setCards(res);
+        setCards(cards);
       })
       .catch(err => console.log(err));
   }, []);
@@ -84,7 +74,7 @@ function App() {
           }
         })
         .catch((err) => console.log(err));
-      }
+    };
   }, []);
 
   /* Cards' buttons handlers: like and delete card */
@@ -93,83 +83,81 @@ function App() {
     api
       .changeLikeCardStatus(card._id, isLiked)
       .then(newCard => {
-        setCards(state => 
-          state.map(currentCard => 
+        setCards(state =>
+          state.map(currentCard =>
             currentCard._id === card._id ? newCard : currentCard))
       })
       .catch(err => console.log(err));
-  }
+  };
 
   function handleCardDelete(card) {
     setIsDeleteCardPopupOpen(true);
     setSelectedCard(card);
-  }
+  };
 
   /* Forms connected to cards gallery submission handlers: delete card, add card */
   const handleDeleteCardSubmission = () => {
+    setIsSaving(true);
     api
       .deleteCard(selectedCard._id)
       .then(() => {
-        setCards(state => 
-          state.filter(currentCard => 
+        setCards(state =>
+          state.filter(currentCard =>
             currentCard._id !== selectedCard._id));
         closeAllPopups();
       })
-      .catch(err => console.log(err));
-  }
+      .catch(err => console.log(err))
+      .finally(() => setIsSaving(false));
+  };
 
-  const handleAddPlaceSubmit = ({name,link}) => {
+  const handleAddPlaceSubmit = ({ name, link }) => {
     setIsSaving(true);
     api
-      .addCard({name,link})
+      .addCard({ name, link })
       .then(newCard => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
       .catch(err => console.log(err))
       .finally(() => setIsSaving(false));
-  }
+  };
 
   /* Sign up and sign in handlers */
-  function handleRegister({ email, password}) {
+  function handleRegister({ email, password }) {
     auth
       .register(email, password)
       .then((res) => {
         if (res.data._id) {
           setInfoToolTipStatus('success');
-          setIsInfoTooltipPopupOpen(true);
           history.push('/signin');
         } else {
           setInfoToolTipStatus('error');
-          setIsInfoTooltipPopupOpen(true);
-        }
+        };
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         setInfoToolTipStatus('error');
-        setIsInfoTooltipPopupOpen(true);
       })
-  }
+      .finally(() => setIsInfoTooltipPopupOpen(true));
+  };
 
   function handleLogin({ email, password }) {
     auth
       .login(email, password)
-      .then((res) => {
-        if (res.token) {
+      .then(({ token }) => {
+        if (token) {
           setIsLoggedIn(true);
           setEmail(email);
-          localStorage.setItem('jwt', res.token);
+          localStorage.setItem('jwt', token);
           history.push('/');
         } else {
           setInfoToolTipStatus('error');
           setIsInfoTooltipPopupOpen(true);
-        }
+        };
       })
       .catch((err) => {
-        console.log(err);
         setInfoToolTipStatus('error');
         setIsInfoTooltipPopupOpen(true);
-      })
+      });
   };
 
   /* Log out handler */
@@ -178,25 +166,25 @@ function App() {
     setEmail('');
     localStorage.removeItem('jwt');
     history.push('/signin');
-  }
+  };
 
   /* Open/close popups handlers: edit avatar, edit profile, add a card, card popup, close all popups */
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
-  }
+  };
 
   const handleEditProfileClick = () => {
     setIsEditProfileOpen(true);
-  }
+  };
 
   const handleAddPlaceClick = () => {
     setIsAddPlacePopupOpen(true);
-  }
+  };
 
   const handleCardClick = (card) => {
     setIsCardPopupOpen(true);
     setSelectedCard(card);
-  }
+  };
 
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
@@ -206,22 +194,22 @@ function App() {
     setIsDeleteCardPopupOpen(false);
     setIsInfoTooltipPopupOpen(false);
     setSelectedCard({});
-  }
+  };
 
   /* Update user profile handlers: user about and avatar */
-  const handleUpdateUser = ({name, about}) => {
+  const handleUpdateUser = ({ name, about }) => {
     setIsSaving(true);
     api
-      .editProfileInfo({name, about})
+      .editProfileInfo({ name, about })
       .then(newUser => {
         setCurrentUser(newUser);
         closeAllPopups();
       })
       .catch(err => console.log(err))
       .finally(() => setIsSaving(false));
-  }
+  };
 
-  const handleUpdateAvatar = (({avatar}) => {
+  const handleUpdateAvatar = (({ avatar }) => {
     setIsSaving(true);
     api
       .editProfilePhoto(avatar)
@@ -231,7 +219,7 @@ function App() {
       })
       .catch(err => console.log(err))
       .finally(() => setIsSaving(false));
-  })
+  });
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -240,14 +228,14 @@ function App() {
         <Switch>
           {/* Protected Main route available only for authorized users */}
           <ProtectedRoute exact path='/' loggedIn={isLoggedIn}>
-            <Main 
-            onEditProfileClick={handleEditProfileClick}
-            onAddPlaceClick={handleAddPlaceClick}
-            onEditAvatarClick={handleEditAvatarClick} 
-            onCardClick={handleCardClick}
-            cards={cards}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete} />
+            <Main
+              onEditProfileClick={handleEditProfileClick}
+              onAddPlaceClick={handleAddPlaceClick}
+              onEditAvatarClick={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete} />
 
             <Footer />
           </ProtectedRoute>
@@ -269,39 +257,40 @@ function App() {
             )}
           </Route>
         </Switch>
-        
-        <EditProfilePopup 
-        isOpen={isEditProfileOpen} 
-        onClose={closeAllPopups}
-        onUpdateUser={handleUpdateUser}
-        isSaving={isSaving} />
-        <EditAvatarPopup 
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-        onUpdateAvatar={handleUpdateAvatar}
-        isSaving={isSaving} />
+
+        <EditProfilePopup
+          isOpen={isEditProfileOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+          isSaving={isSaving} />
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+          isSaving={isSaving} />
         <AddPlacePopup
-        isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}
-        onAddPlaceSubmit={handleAddPlaceSubmit}
-        isSaving={isSaving} />
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlaceSubmit={handleAddPlaceSubmit}
+          isSaving={isSaving} />
         <DeleteCardPopup
-        isOpen={isDeleteCardPopupOpen}
-        onClose={closeAllPopups}
-        onDeleteCardSubmission={handleDeleteCardSubmission} />
+          isOpen={isDeleteCardPopupOpen}
+          onClose={closeAllPopups}
+          onDeleteCardSubmission={handleDeleteCardSubmission}
+          isSaving={isSaving} />
 
         <InfoTooltip
-        isOpen={isInfoTooltipPopupOpen}
-        onClose={closeAllPopups}
-        status={infoToolTipStatus} />
-        
-        <ImagePopup 
-        card={selectedCard}
-        isOpen={isCardPopupOpen}
-        onClose={closeAllPopups} />
+          isOpen={isInfoTooltipPopupOpen}
+          onClose={closeAllPopups}
+          status={infoToolTipStatus} />
+
+        <ImagePopup
+          card={selectedCard}
+          isOpen={isCardPopupOpen}
+          onClose={closeAllPopups} />
       </div>
     </CurrentUserContext.Provider>
   );
-}
+};
 
 export default App;

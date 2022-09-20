@@ -1,31 +1,19 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import Popup from './Popup';
 
-function ImagePopup(props) {
-  useEffect(() => {
-    const onEscPress = (e) => e.key === 'Escape' && props.onClose();
-    document.addEventListener('keydown', onEscPress);
-
-    return () => {
-      document.removeEventListener('keydown', onEscPress);
-    };
-  }, []);
-
+function ImagePopup({ isOpen, onClose, card }) {
   return (
-    <div className={`popup popup_type_picture ${props.isOpen ? 'popup_opened' : ''}`}>
-      <div className="popup-picture-box">
-        <button 
-        type="button" 
-        className="action-button popup__close-button popup-picture-box__button"
-        aria-label="Close button"
-        onClick={props.onClose} />
-        <img 
-        src={props.card.link} 
-        alt="" 
-        className="popup-picture-box__image" />
-        <p className="popup-picture-box__caption">{props.card.name}</p>
-      </div>
-    </div>
-  )
-}
+    <Popup
+      isOpen={isOpen}
+      onClose={onClose}
+      name='picture'>
+      <img
+        src={card.link}
+        alt={card.name}
+        className='popup-picture-box__image' />
+      <p className='popup-picture-box__caption'>{card.name}</p>
+    </Popup>
+  );
+};
 
 export default ImagePopup;

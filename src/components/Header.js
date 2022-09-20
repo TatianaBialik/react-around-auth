@@ -8,32 +8,32 @@ function Header({ email, onLogout }) {
 
   function handleBurgerMenuClick() {
     setIsBurgerButtonActive(true);
-  }
+  };
 
   function handleCloseMenuClick() {
     setIsBurgerButtonActive(false);
-  }
+  };
 
   function handleLogout() {
     onLogout();
     setIsBurgerButtonActive(false);
-  }
+  };
 
   return (
-    <header className="header">
+    <header className='header'>
       {(location.pathname === '/' && isBurgerButtonActive) && (
-        <div className="header__menu_active">
+        <div className='header__menu_active'>
           <p className='header__item header__text'>{email}</p>
-          <button 
-          className="header__item header__button action-button" 
-          onClick={handleLogout}>Log out</button>
-      </div>
+          <button
+            className='header__item header__button action-button'
+            onClick={handleLogout}>Log out</button>
+        </div>
       )}
-      <div className="header__main">
-        <img 
-        src={logo}
-        alt="Around the U.S. inscription" 
-        className="header__logo" />
+      <div className='header__main'>
+        <img
+          src={logo}
+          alt='Around the U.S. inscription'
+          className='header__logo' />
 
         {location.pathname === '/signin' && (
           <NavLink to='/signup' className='header__item link'>
@@ -48,25 +48,25 @@ function Header({ email, onLogout }) {
         {location.pathname === '/' && (
           <>
             {isBurgerButtonActive ? (
-              <button 
-              className="header__close-menu-button action-button" 
-              onClick={handleCloseMenuClick} />
+              <button
+                className='header__close-menu-button action-button'
+                onClick={handleCloseMenuClick} />
             ) : (
-              <button 
-              className='header__burger-menu action-button'
-              onClick={handleBurgerMenuClick} />
+              <button
+                className='header__burger-menu action-button'
+                onClick={handleBurgerMenuClick} />
             )}
-            <div className="header__menu">
+            <div className='header__menu'>
               <p className='header__item header__text'>{email}</p>
-              <button 
-              className="header__item header__button action-button" 
-              onClick={onLogout}>Log out</button>
+              <button
+                className='header__item header__button action-button'
+                onClick={onLogout}>Log out</button>
             </div>
           </>
-          )}
+        )}
       </div>
     </header>
-  )
-}
+  );
+};
 
 export default Header;

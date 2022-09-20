@@ -1,46 +1,41 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import Popup from './Popup';
 
-function PopupWithForm(props) {
-
-  useEffect(() => {
-    if (!props.isOpen) return;
-
-    const onEscPress = (e) => e.key === 'Escape' && props.onClose();
-    document.addEventListener('keydown', onEscPress);
-
-    return () => {
-      document.removeEventListener('keydown', onEscPress);
-    };
-  }, []);
-
+function PopupWithForm({
+          isOpen,
+          onClose,
+          onSubmit,
+          name,
+          title,
+          children,
+          buttonText,
+          buttonProcessText,
+          isSaving 
+        }) {
   return (
-    <div className={`popup popup_type_${props.name} ${props.isOpen ? 'popup_opened' : ''}`}>
-      <div className="popup__box">
-        <button 
-        type="button" 
-        className="action-button popup__close-button"
-        aria-label="Close"
-        onClick={props.onClose}></button>
+    <Popup
+      isOpen={isOpen}
+      onClose={onClose}
+      name={name}>
 
-        <form 
-        action="#" 
-        className={`form form_type_${props.name}`}
-        name={props.name}
-        onSubmit={props.onSubmit}
-        noValidate>
-          <h2 className="form__title">{props.title}</h2>
-          {props.children}
+      <form
+        action='#'
+        className={`form form_type_${name}`}
+        name={name}
+        onSubmit={onSubmit}>
 
-          <button 
-          type="submit" 
-          className="form__submit-button">
-            {props.buttonText}
-          </button>
-        </form>
-      </div>
-    </div>
-  )
-}
+        <h2 className='form__title'>{title}</h2>
+        {children}
+        <button
+          type='submit'
+          className={`form__submit-button ${isSaving ? 'form__submit-button_disabled' : ''}`}
+          disabled={isSaving}>
+          {isSaving ? buttonProcessText : buttonText}
+        </button>
+
+      </form>
+    </Popup>
+  );
+};
 
 export default PopupWithForm;
-
