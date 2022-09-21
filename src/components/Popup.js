@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-function Popup({ isOpen, onClose, name, children }) {
+function Popup({ isOpen, onClose, name, boxClasses='popup__box', children }) {
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -26,7 +26,7 @@ function Popup({ isOpen, onClose, name, children }) {
       <div
         className={`popup ${isOpen ? 'popup_opened' : ''} popup_type_${name}`}
         onClick={handleOverlayClick} >
-          <div className={`${name === 'picture' ? 'popup-picture-box' : 'popup__box'}`}>
+          <div className={boxClasses}>
             <button
               type='button'
               className='action-button popup__close-button'

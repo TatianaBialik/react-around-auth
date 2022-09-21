@@ -28,7 +28,7 @@ function PopupWithForm({
         {children}
         <button
           type='submit'
-          className={`form__submit-button ${isSaving ? 'form__submit-button_disabled' : ''}`}
+          className='form__submit-button'
           disabled={isSaving}>
           {isSaving ? buttonProcessText : buttonText}
         </button>

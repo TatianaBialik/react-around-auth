@@ -6,7 +6,8 @@ function ImagePopup({ isOpen, onClose, card }) {
     <Popup
       isOpen={isOpen}
       onClose={onClose}
-      name='picture'>
+      name='picture'
+      boxClasses='popup-picture-box'>
       <img
         src={card.link}
         alt={card.name}

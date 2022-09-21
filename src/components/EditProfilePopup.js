@@ -36,7 +36,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, isSaving }) {
         id='edit-form-name-input'
         placeholder='Enter your name'
         onChange={handleChange}
-        value={values.name}
+        value={values.name || ''}
         required />
       <span className='form__error edit-form-name-input-error' />
 
@@ -49,7 +49,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, isSaving }) {
         id='edit-form-info-input'
         placeholder='Enter your info'
         onChange={handleChange}
-        value={values.about}
+        value={values.about || ''}
         required />
       <span className='form__error edit-form-info-input-error' />
     </PopupWithForm>
